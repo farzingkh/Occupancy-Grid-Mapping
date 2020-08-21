@@ -9,11 +9,19 @@
 #include "map.h"
 #include "sensor.h"
 
+struct State
+{
+    double x;
+    double y;
+    double orientation;
+};
+}
+
 class Robot
 {
 public:
     // Initialize robot in a random position in the world
-    Robot(Sensor *sensor, Map *map = nullptr, FILE *pose = nullptr);
+    Robot(double width, double height, Sensor *sensor, Map *map = nullptr, FILE *pose = nullptr);
     // de'tor
     ~Robot();
     // Set robot's states
@@ -24,20 +32,25 @@ public:
     std::vector<double> sense(bool noise = true);
     // Move the robot
     void move(double turn, double forward);
-    // get x
-    double get_x();
-    // get y
-    double get_y();
     // Get pose readings
-    std::string get_pose(FILE *file = nullptr);
+    State get_pose(FILE *file = nullptr);
     // Get sensor readings
-    std::string get_sensor_readings(FILE *file = nullptr);
+    std::string get_sensor_readings();
+    // get map
+    Map *get_map();
+    // get sensor object
+    Sensor *get_sensor();
+    // get robot dimensions
+    double get_width();
+    double get_height();
+
 
 private:
+    // robot size
+    double robot_width__;
+    double robot_height__;
     // robot states
-    double x__;
-    double y__;
-    double orientation__;
+    State states__;
     // noise
     static double forward_noise__;
     static double turn_noise__;
