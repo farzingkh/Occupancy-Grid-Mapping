@@ -13,9 +13,9 @@ public:
     // set sensor noise
     void set_noise(double noise);
     // get sensor readings
-    std::vector<double> get_readings(FILE *file = nullptr);
+    std::vector<double> get_readings(double robot_x, double robot_y, Map *map, bool noise = true);
     // sensor likelihood field model
-    double forward_model(std::vector<double> readings, Map map);
+    double forward_model(std::vector<double> readings, Map *map);
     // get probability of map given sensor inverse model
     double inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y);
     // get sensor characteristics
@@ -25,7 +25,7 @@ public:
 
 private:
     // sensor recording file
-    FILE *file;
+    FILE *file__;
     // sensor characteristics
     double min_z__;
     double max_z__;
