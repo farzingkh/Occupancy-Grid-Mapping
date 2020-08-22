@@ -1,6 +1,5 @@
 #include "../include/utility.h"
-#include "../include/world.h"
-#include "../include/MCL.h"
+#include "../include/map.h"
 
 #include <iostream>
 #include <math.h>
@@ -35,6 +34,8 @@ double utility::get_gaussian_probability(double mean, double var, double x)
     return p;
 }
 
+
+/*
 double utility::evaluation(Robot *r, std::vector<particle> *p, World *world)
 {
     //Calculate the mean error of the system
@@ -49,6 +50,7 @@ double utility::evaluation(Robot *r, std::vector<particle> *p, World *world)
     }
     return sum / p->size();
 }
+
 
 void utility::visualization(Robot *robot, int step, std::vector<particle> *belief, std::vector<particle> *new_belief, World *w)
 {
@@ -104,3 +106,4 @@ void utility::visualization(Robot *robot, int step, std::vector<particle> *belie
     cvplot::figure(name).show();
 
 }
+*/
