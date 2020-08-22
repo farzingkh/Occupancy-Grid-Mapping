@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <iostream>
-
-class Map;
+#include <math.h>
+#include "map.h"
 
 class Sensor
 {
