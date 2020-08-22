@@ -1,8 +1,11 @@
 #include "../include/map.h"
+#include <iostream>
 
-Map(double size_x, double size_y, double grid_width, double, double grid_height) : size_x__(size)x), size_y__(size_y), grid_width__(grid_width), grid_height__(grid_height)
+Map::Map(double map_width, double map_height, double grid_width, double grid_height) : map_width__(map_width), map_height__(map_height), grid_width__(grid_width), grid_height__(grid_height)
 {
-    data__ = std::vector<std::vector<double>> v(size_y__, std::vector<double> row(size_x__);
+    // initialize a map coonsidering map and grid cell dimensions
+    std::cout << "Initializing a Map of size " << map_width << "x" << map_height <<  " ..."  << std::endl;
+    data__ = std::vector<std::vector<double>>((map_height__ / grid_height__), std::vector<double>(map_width__ / grid_width__, 0.0));
 }
 
 void Map::set_landmarks(double x, double y)
@@ -19,24 +22,29 @@ std::vector<double> Map::get_landmarks()
     return landmarks__;
 }
 
+std::vector<double> &Map::operator[](int x)
+{
+    return data__[x];
+}
+
 void Map::set_occupancy(double x, double y, double log_odds)
 {
     data__[x][y] = log_odds;
 }
 
-void Map::get_occupancy(double x, double y)
+double Map::get_occupancy(double x, double y)
 {
     return data__[x][y];
 }
 
-double Map::get_size_x()
+double Map::get_map_width()
 {
-    return size_x__;
+    return map_width__;
 }
 
-double Map::get_size_y()
+double Map::get_map_height()
 {
-    return size_y__;
+    return map_height__;
 }
 
 double Map::get_grid_width()
