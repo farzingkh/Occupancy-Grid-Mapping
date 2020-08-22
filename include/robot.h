@@ -6,24 +6,21 @@
 #include <iostream>
 #include <math.h>
 #include <exception>
-#include "map.h"
 #include "sensor.h"
 
 struct State
 {
+    double time_stamp;
     double x;
     double y;
     double orientation;
 };
-}
 
 class Robot
 {
 public:
     // Initialize robot in a random position in the world
     Robot(double width, double height, Sensor *sensor, Map *map = nullptr, FILE *pose = nullptr);
-    // de'tor
-    ~Robot();
     // Set robot's states
     void set_states(double new_x, double new_y, double new_orient);
     // Set robots state transition noise
@@ -33,7 +30,7 @@ public:
     // Move the robot
     void move(double turn, double forward);
     // Get pose readings
-    State get_pose(FILE *file = nullptr);
+    State get_pose();
     // Get sensor readings
     std::string get_sensor_readings();
     // get map
