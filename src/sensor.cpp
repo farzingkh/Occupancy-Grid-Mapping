@@ -45,7 +45,7 @@ std::vector<double> Sensor::get_readings(double robot_x, double robot_y, Map *ma
 
         return measurements;
     }
-    
+
     // print sensor reading
     /*
     for (int i = 0; i<9 ; ++i)
@@ -58,16 +58,61 @@ std::vector<double> Sensor::get_readings(double robot_x, double robot_y, Map *ma
     return data;
 }
 
-double Sensor::forward_model(std::vector<double> readings, Map *map)
+double Sensor::forward_model(std::vector<double> readings, Map *map, double robot_x, double robot_y, double robot_theta, double z_hit, double z_max, double z_rand, double sig_hit);
 {
     // likelihood field model
-    // phit
-    // pmax
-    // pfail
-    return 0.4;
+    // sensor measurement
+    double z_k;
+    // probability of sensor measurement
+    double p = 1;
+    // transformed x, y of sensor measurements
+    double x_z_k;
+    double y_z_k;
+    // distance to nearest neighbour
+    double dist;
+    // sensor theta
+    double sensor_theta;
+    // loop through sensors
+    for (int i = 1; i < 9; i++)
+    {
+        // Map sensor angles for [-90 -37.5 -22.5 -7.5 7.5 22.5 37.5 90]
+        if (i == 1)
+        {
+            sensor_theta = -90 * (M_PI / 180);
+        }
+        else if (i == 2)
+        {
+            sensor_theta = -37.5 * (M_PI / 180);
+        }
+        else if (i == 7)
+        {
+            sensor_theta = 37.5 * (M_PI / 180);
+        }
+        else if (i == 8)
+        {
+            sensor_theta = 90 * (M_PI / 180);
+        }
+        else
+        {
+            sensor_theta = (-37.5 + (i - 2) * 15) * (M_PI / 180);
+        }
+
+        z_k = sensor_data[i];
+        theta_k = sensor_theta;
+
+        if (z_k != max_z__)
+        {
+            x_z_k = robot_x + z_k * cos(robot_theta + theta_k);
+            y_z_k = robot_y + z_k * sin(robot_theta + theta_k);
+            dist = distance_to_nn(x_z_k, y_z_k);
+            p = p * (z_hit * utility::get_gaussian_probability(0, sig_hit, dist) + z_rand / z_max);
+        }
+    }
+    
+    return p;
 }
 
-double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y, double l_o, double l_free, double l_occ, std::vector<double>& sensor_data)
+double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y, double l_o, double l_free, double l_occ, std::vector<double> &sensor_data)
 {
     // simplistic iverse model of a range sensor using beam cone model
     // measurement
@@ -119,7 +164,7 @@ double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta,
     }
 
     // consider the three occupancy cases
-    if ((r > std::min(max_z__, z_k + a / 2)) or (fabs(phi - theta_k) > b / 2) or (z_k > max_z__ ) or (z_k < min_z__))
+    if ((r > std::min(max_z__, z_k + a / 2)) or (fabs(phi - theta_k) > b / 2) or (z_k > max_z__) or (z_k < min_z__))
     {
         return l_o;
     }
@@ -136,6 +181,8 @@ double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta,
         return l_o;
     }
 }
+
+double distance_to_nn(double x, double y) { return 0.0; }
 
 double Sensor::get_min_range() { return min_z__; }
 
