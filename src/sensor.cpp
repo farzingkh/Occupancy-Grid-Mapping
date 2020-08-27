@@ -102,13 +102,16 @@ double Sensor::forward_model(std::vector<double> readings, Map *map, double robo
 
         if (z_k != max_z__)
         {
+            // transfor the sensor measurement onto the map
             x_z_k = robot_x + z_k * cos(robot_theta + theta_k);
             y_z_k = robot_y + z_k * sin(robot_theta + theta_k);
+            // find the distance to nearest occupied grid on the map
             dist = distance_to_nn(x_z_k, y_z_k);
+            // get the probability of such measurement based on the distance to nn
             p = p * (z_hit * utility::get_gaussian_probability(0, sig_hit, dist) + z_rand / z_max);
         }
     }
-    
+
     return p;
 }
 
@@ -182,7 +185,34 @@ double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta,
     }
 }
 
-double distance_to_nn(double x, double y) { return 0.0; }
+double Sensor::distance_to_nn(double x, double y, Map *map, double robot_width, double robot_height)
+{
+    // naive implementation
+    double dist = -1;
+    double r;
+    double com_x;
+    double com_y;
+    double grid_height = map->get_map_height();
+    double grid_width = map->get_grid_width();
+    // loop through all grids on the map
+    for (int x = 0; x < map->get_map_width() / grid_width; ++x)
+    {
+        for (int y = 0; map->get_map_height() / grid_height; ++y)
+        {
+            // find centre of mass of the grid cells
+            com_x = x * grid_height + grid_height / 2 - robotwidth;
+            com_y = -(y * grid_height + grid_height / 2) + robot_height;
+            //find euclidean distance to measurement x, y
+            r = sqrt(pow(com_x - x, 2), pow(com_y - y, 2));
+            // keep the smallest dist
+            if (dist == -1 || r < dist)
+            {
+                dist = r;
+            }
+        }
+    }
+    return dist;
+}
 
 double Sensor::get_min_range() { return min_z__; }
 

@@ -19,7 +19,7 @@ public:
     // get probability of map given sensor inverse model
     double inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y, double l_o, double l_free, double l_occ, std::vector<double> &sensor_data);
     // get distance to nearest neighbour
-    double distance_to_nn(double x, double y);
+    double distance_to_nn(double x, double y, Map *map);
     // get sensor characteristics
     double get_min_range();
     double get_max_range();
