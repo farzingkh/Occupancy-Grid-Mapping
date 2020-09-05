@@ -1,5 +1,4 @@
 #include "../include/robot.h"
-#include "../include/utility.h"
 
 double Robot::forward_noise__;
 double Robot::turn_noise__;
