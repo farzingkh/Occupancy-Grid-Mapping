@@ -2,8 +2,6 @@
 #define UTILITY_H
 
 #include <vector>
-//#include "../cvplot/include/cvplot/cvplot.h"
-//#include <opencv2/opencv.hpp>
 
 class World;
 struct particle;
@@ -19,8 +17,7 @@ namespace utility
     double get_gaussian_probability(double mean, double var, double x);
     // evaluate each belief
     double evaluation(Robot *r, std::vector<particle> *belief, World *w);
-    // visualize the robot and particles
-    void visualization(Robot *robot, int step, std::vector<particle> *belief, std::vector<particle> *new_belief, World *w);
+    
 } // namespace utility
 
 #endif
