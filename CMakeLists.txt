@@ -7,7 +7,10 @@ project(OGM)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(CMAKE_BUILD_TYPE Debug)
 
+find_package(Python 2.7 REQUIRED)
 find_package(PythonLibs 2.7)
+message("Pyhton_FOUND: ${Python_FOUND}")
+message("Pyhton_VERSION: ${Python_VERSION}")
 
 include_directories("${PROJECT_SOURCE_DIR}/include/")
 
