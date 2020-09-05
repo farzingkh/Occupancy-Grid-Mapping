@@ -15,6 +15,9 @@
 
 #pragma once
 
+#ifndef MATPLOTLIB_H
+#define MATPLOTLIB_H
+
 #include <algorithm>
 #include <array>
 #include <cstdint> // <cstdint> requires c++11 support
@@ -692,7 +695,7 @@ void imshow(const Matrix& X, const std::map<std::string, std::string> &keywords 
 }
 
 // @brief Add the colorbar
-void colorbar() {
+inline void colorbar() {
   PyObject *res =
       PyObject_CallObject(detail::_interpreter::get().s_python_function_colorbar,
                           detail::_interpreter::get().s_python_empty_tuple);
@@ -2054,3 +2057,5 @@ private:
 };
 
 } // end namespace matplotlibcpp
+
+#endif /* MATPLOTLIB_H */
