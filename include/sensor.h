@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 #include "map.h"
+#include "utility.h"
 
 class Sensor
 {
@@ -15,11 +16,11 @@ public:
     // get sensor readings
     std::vector<double> get_readings(double robot_x, double robot_y, Map *map = nullptr, bool noise = true);
     // sensor likelihood field model
-    double forward_model(std::vector<double> readings, Map *map, double robot_x, double robot_y, double robot_theta, double z_hit, double z_max, double z_rand, double sig_hit);
+    double forward_model(std::vector<double>& readings, Map *map, double robot_x, double robot_y, double robot_theta, double robot_width, double robot_height,  double z_hit, double z_max, double z_rand, double sig_hit);
     // get probability of map given sensor inverse model
     double inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y, double l_o, double l_free, double l_occ, std::vector<double> &sensor_data);
     // get distance to nearest neighbour
-    double distance_to_nn(double x, double y, Map *map);
+    double distance_to_nn(double x, double y, Map *map, double robot_width, double robot_height);
     // get sensor characteristics
     double get_min_range();
     double get_max_range();
