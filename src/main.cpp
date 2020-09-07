@@ -1,5 +1,5 @@
 #include "../include/occgridmapping.h"
-#include "../include/utility.h"
+#include "../include/visualization.h"
 
 int main()
 {
@@ -16,7 +16,9 @@ int main()
     Mapping M(&robot);
     M.occ_grid_mapping();
     // print the map
-    M.print_map();
+    // M.print_map();
+    // plot the map
+    Visualization::mapShow(&map);
     // close
     fclose(mes_file);
     fclose(pos_file);
