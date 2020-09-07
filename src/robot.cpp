@@ -1,4 +1,5 @@
 #include "../include/robot.h"
+#include <iostream>
 
 double Robot::forward_noise__;
 double Robot::turn_noise__;
@@ -59,6 +60,7 @@ void Robot::move(double turn, double forward)
 
 State Robot::get_pose()
 {
+    // check if sensor recording file is set
     if (pose__ != nullptr)
     {
         if (std::fscanf(pose__, "%lf %lf %lf %lf", &states__.time_stamp, &states__.x, &states__.y, &states__.orientation) == EOF)
@@ -70,7 +72,7 @@ State Robot::get_pose()
     }
 
     std::string pose = std::string("[") + std::string("Timestamp=") + std::to_string(states__.time_stamp) + std::string("X=") + std::to_string(states__.x) + std::string(", Y=") + std::to_string(states__.y) + std::string(" Theta=") + std::to_string(states__.orientation) + std::string("]");
-
+    std::cout << pose << std::endl;
     return states__;
 }
 

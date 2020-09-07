@@ -31,7 +31,7 @@ public:
     void move(double turn, double forward);
     // Get pose readings
     State get_pose();
-    // Get sensor readings
+    // Get sensor readings in form of a string
     std::string get_sensor_readings();
     // get map
     Map *get_map();
