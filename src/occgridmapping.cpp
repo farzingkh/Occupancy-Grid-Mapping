@@ -33,27 +33,31 @@ void Mapping::occ_grid_mapping()
 
     while (robot_states.time_stamp != -1)
     {
-
-        for (int y = 0; y < rows; ++y)
+        for (int x = 0; x < cols; ++x)
         {
-            for (int x = 0; x < cols; ++x)
+            for (int y = 0; y < rows; ++y)
             {
-                //std::cout << "Processing the cell at " << x << "," << y << std::endl;
                 // compute centre of mass of each cell
                 double com_x = x * grid_width + (grid_width / 2) - robot_width;
-                double com_y = -(y * grid_height + grid_height / 2) + robot_height;
+                double com_y = -((y * grid_height) + (grid_height / 2)) + robot_height;
+                //std::cout << "[x: " << x << ",y: " << y << std::endl;
+                //std::cout << "[grid_x: " << com_x << ",grid_y: " << com_y << std::endl;
                 // check if cell is in robot perception feild
                 double r = sqrt(pow(robot_states.x - com_x, 2) + pow(robot_states.y - com_y, 2));
                 // assuming if r is within the sensor range it's inside
                 if (r <= robot__->get_sensor()->get_max_range())
                 {
-                    (*map)[y][x] = (*map)[y][x] + (robot__->get_sensor())->inverse_model(robot_states.x, robot_states.y, robot_states.orientation, com_x, com_y, l_o__, l_free__, l_occ__, sensor_data);
+                    double inv = (robot__->get_sensor())->inverse_model(robot_states.x, robot_states.y, robot_states.orientation, com_x, com_y, l_o__, l_free__, l_occ__, sensor_data);
+                    //std::cout << "[Inverse]" << inv << std::endl;
+                    //std::cout << std::endl;
+                    (*map)[x][y] = (*map)[x][y] + inv - l_o__;
                 }
             }
         }
         // read the next recording
         robot_states = robot__->get_pose();
-        std::vector<double> sensor_data = (robot__->get_sensor())->get_readings(robot_states.x, robot_states.y);
+        // read next sensro data
+        sensor_data = (robot__->get_sensor())->get_readings(robot_states.x, robot_states.y);
     }
 }
 
@@ -76,11 +80,11 @@ void Mapping::print_map()
     double cols = ((robot__->get_map())->get_map_width() / (robot__->get_map())->get_grid_width());
     double rows = ((robot__->get_map())->get_map_height() / (robot__->get_map())->get_grid_height());
 
-    for (int y = 0; y < rows; ++y)
+    for (int x = 0; x < cols; ++x)
     {
-        for (int x = 0; x < cols; ++x)
+        for (int y = 0; y < rows; ++y)
         {
-            std::cout << (*map)[y][x] << " ";
+            std::cout << (*map)[x][y] << " ";
         }
     }
     std::cout << "\n";
