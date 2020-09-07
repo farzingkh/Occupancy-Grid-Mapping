@@ -26,6 +26,10 @@ std::vector<double> Sensor::get_readings(double robot_x, double robot_y, Map *ma
                 data[i] = -1;
             }
         }
+        std::string readings = std::string("[");
+        std::for_each(data.begin(), data.end(), [&readings](double mm) { readings += std::string(" ") + std::to_string(mm); });
+        readings += std::string(" ]");
+        //std::cout << readings << std::endl;
     }
     else if (map != nullptr)
     {
@@ -36,7 +40,7 @@ std::vector<double> Sensor::get_readings(double robot_x, double robot_y, Map *ma
         for (int i = 1; i < lms.size(); i += 2)
         {
             // get Euclidean distance to each landmark and add noise to simulate range finder data
-            double m = std::sqrt(pow((lms[i - 1] - robot_x), 2) + pow((lms[i] - robot_y), 2));
+            double m = sqrt(pow((lms[i - 1] - robot_x), 2) + pow((lms[i] - robot_y), 2));
             // add gaussian noise if noise flag is true
             noise ? m += utility::get_gaussian_random_number(0.0, sense_noise__) : m += 0.0;
             measurements.push_back(m);
@@ -45,19 +49,10 @@ std::vector<double> Sensor::get_readings(double robot_x, double robot_y, Map *ma
         return measurements;
     }
 
-    // print sensor reading
-    /*
-    for (int i = 0; i<9 ; ++i)
-    {
-        std::cout << data[i];
-    }
-    std::cout << "\n";
-    */
-
     return data;
 }
 
-double Sensor::forward_model(std::vector<double>& sensor_data, Map *map, double robot_x, double robot_y, double robot_theta, double robot_width, double robot_height, double z_hit, double z_max, double z_rand, double sig_hit)
+double Sensor::forward_model(std::vector<double> &sensor_data, Map *map, double robot_x, double robot_y, double robot_theta, double robot_width, double robot_height, double z_hit, double z_max, double z_rand, double sig_hit)
 {
     // likelihood field model
     // sensor measurement
@@ -119,6 +114,9 @@ double Sensor::forward_model(std::vector<double>& sensor_data, Map *map, double 
 double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta, double grid_x, double grid_y, double l_o, double l_free, double l_occ, std::vector<double> &sensor_data)
 {
     // simplistic iverse model of a range sensor using beam cone model
+    //std::cout << "[robot_x:" << robot_x << ", robot_y:" << robot_y << ", robot_o:" << robot_theta << "]" << std::endl;
+    //std::cout << "[grid_x:" << grid_x << ", grid_y:" << grid_y << "]" << std::endl;
+
     // measurement
     double z_k;
     // angle to measurement
@@ -127,15 +125,18 @@ double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta,
     double sensor_theta;
     // minimum difference between angles
     double min_delta = -1;
-    // obstacle width
+    // cell width
     double a = 200;
     // sensor beam opening angle
     double b = 20;
     // compute distance from cell to sensor
-    double r = std::sqrt(pow(robot_x - grid_x, 2) + pow(robot_y - grid_y, 2));
+    double r = sqrt(pow(robot_x - grid_x, 2) + pow(robot_y - grid_y, 2));
+    //std::cout << "r:" << r << std::endl;
     // calculate angle between sensor reading and robot theta
     double phi = atan2(grid_y - robot_y, grid_x - robot_x) - robot_theta;
+    //std::cout << "phi:" << phi << std::endl;
     // Sensor angles [-90 -37.5 -22.5 -7.5 7.5 22.5 37.5 90]
+    // find the sensor that the grids falls in its cone
     for (int i = 1; i < 9; i++)
     {
         if (i == 1)
@@ -164,8 +165,13 @@ double Sensor::inverse_model(double robot_x, double robot_y, double robot_theta,
             z_k = sensor_data[i];
             theta_k = sensor_theta;
             min_delta = fabs(phi - sensor_theta);
+            //std::cout << i << std::endl;
+            //std::cout << min_delta << std::endl;
         }
     }
+
+    //std::cout << "measurement: " << z_k << std::endl;
+    //std::cout << "Sensor theta: " << theta_k << std::endl;
 
     // consider the three occupancy cases
     if ((r > std::min(max_z__, z_k + a / 2)) or (fabs(phi - theta_k) > b / 2) or (z_k > max_z__) or (z_k < min_z__))
@@ -204,7 +210,7 @@ double Sensor::distance_to_nn(double x, double y, Map *map, double robot_width, 
             com_x = x * grid_height + grid_height / 2 - robot_width;
             com_y = -(y * grid_height + grid_height / 2) + robot_height;
             //find euclidean distance to measurement x, y
-            r = std::sqrt(pow(com_x - x, 2)+ pow(com_y - y, 2));
+            r = sqrt(pow(com_x - x, 2) + pow(com_y - y, 2));
             // keep the smallest dist
             if (dist == -1 || r < dist)
             {
