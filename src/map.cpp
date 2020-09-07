@@ -5,7 +5,7 @@ Map::Map(double map_width, double map_height, double grid_width, double grid_hei
 {
     // initialize a map coonsidering map and grid cell dimensions
     std::cout << "Initializing a Map of size " << map_width << "x" << map_height << " ..." << std::endl;
-    data__ = std::vector<std::vector<double>>((map_height__ / grid_height__), std::vector<double>(map_width__ / grid_width__, 0.0));
+    data__ = std::vector<std::vector<double>>((map_width__ / grid_width__), std::vector<double>(map_height__ / grid_height__, 0.0));
 }
 
 void Map::set_landmarks(double x, double y)
@@ -31,7 +31,7 @@ void Map::set_occupancy(double x, double y, double log_odds)
 {
     if (x >= 0 && x < (map_width__ / grid_width__) && y >= 0 && y < (map_height__ / grid_height__))
     {
-        data__[y][x] = log_odds;
+        data__[x][y] = log_odds;
     }
     else
     {
@@ -44,7 +44,7 @@ double Map::get_occupancy(double x, double y)
 {
     if (x >= 0 && x < (map_width__ / grid_width__) && y >= 0 && y < (map_height__ / grid_height__))
     {
-        return data__[y][x];
+        return data__[x][y];
     }
     else
     {
